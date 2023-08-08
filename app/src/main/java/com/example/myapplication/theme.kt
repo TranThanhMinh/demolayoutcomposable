@@ -14,6 +14,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.Card
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -36,6 +37,7 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.sp
 import kotlinx.coroutines.flow.MutableStateFlow
 
@@ -49,7 +51,7 @@ fun PlayingWithComposeTheme(
 ) {
     var textState by remember { mutableStateOf("") }
 
-    val _list = remember { MutableStateFlow(listOf<String>()) }
+    var _list = remember { MutableStateFlow(listOf<String>()) }
     val list by remember { _list }.collectAsState()
 
 
@@ -72,13 +74,13 @@ fun PlayingWithComposeTheme(
             Modifier
                 .fillMaxWidth()
                 .height(height = 40.dp)
-                .background(Color.White)
+                .background(White)
         ) {
             val modifier =
                 Modifier
                     .align(Alignment.CenterStart)
                     .padding(start = 10.dp)
-            val color = Color.Red
+            val color = Red
             Text(text = name!!, modifier = modifier, color)
         }
 
@@ -91,7 +93,7 @@ fun PlayingWithComposeTheme(
             label = { Text("User name") },
             textStyle = TextStyle(Blue),
             modifier = Modifier
-                .background(Color.White)
+                .background(White)
                 .border(1.dp, Red, shape)
                 .fillMaxWidth()
         )
@@ -99,12 +101,13 @@ fun PlayingWithComposeTheme(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(height = 40.dp)
+                .fillMaxHeight()
+                .background(Color.Black)
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(0.5f)
                     .background(Red)
             ) {
                 Text(
@@ -115,7 +118,7 @@ fun PlayingWithComposeTheme(
             Box(
                 modifier = Modifier
                     .fillMaxWidth(0.5f)
-                    .fillMaxHeight()
+                    .fillMaxHeight(0.2f)
                     .background(Blue)
             ) {
                 Text(
@@ -157,6 +160,7 @@ fun PlayingWithComposeTheme(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxHeight()
+                .background(Color.Gray)
         ) {
             val modifier = Modifier
                 .align(Alignment.BottomStart)
@@ -172,29 +176,72 @@ fun PlayingWithComposeTheme(
 
 }
 
+//@Preview
+//@Composable
+//fun ListName( itemClick: ((String) -> Unit)? = null){
+//    val _list = remember { MutableStateFlow(listOf<String>()) }
+//    val list by remember { _list }.collectAsState()
+//
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxWidth()
+//            .fillMaxHeight()
+//    ) {
+//        val modifier = Modifier
+//            .align(Alignment.BottomStart)
+//
+//        LazyColumn(modifier = modifier) {
+//            items(items = list, itemContent = {
+//                PuppyListItem(it, itemClick = itemClick!!)
+//            })
+//        }
+//    }
+//}
+
+
 @Composable
 fun PuppyListItem(puppy: String, itemClick: ((String) -> Unit)?) {
+    var isShow = remember {
+        mutableStateOf(false)
+    }
+
+    if (isShow.value) {
+        AlertDialog(onDismissRequest = { },
+            text = {
+                Text(text = puppy!!,
+                    modifier = Modifier.clickable { isShow.value = false })
+            },
+            buttons = {
+
+            })
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 5.dp)
-    ) {
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .background(Color.Green)
-            .padding(horizontal = 10.dp)
             .clickable {
+                // itemClick!!.invoke(puppy)
+               // isShow.value = true
                 itemClick!!.invoke(puppy)
-            }) {
+            }
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color.Green)
+                .padding(10.dp)
+        ) {
             Text(
                 text = puppy, modifier = Modifier
                     .fillMaxWidth()
                     .align(Alignment.CenterStart), color = White
             )
+
         }
     }
-
 }
+
 
 @Preview
 @Composable
@@ -254,6 +301,7 @@ fun layoutLogin(
                 BasicTextField(
                     value = pass,
                     modifier = top,
+                    visualTransformation = PasswordVisualTransformation(),
                     onValueChange = { pass = it },
                     decorationBox = { innerTextField ->
                         Row(
